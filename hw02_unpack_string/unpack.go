@@ -1,4 +1,4 @@
-package hw02_unpack_string
+package hw02unpackstring
 
 import (
 	"errors"
@@ -26,6 +26,7 @@ func Unpack(input string) (string, error) {
 	}
 	return outputString.String(), nil
 }
+
 func getSymbol(i *int, runes []rune) (symb string, _ error) {
 	if unicode.IsDigit(runes[*i]) {
 		return "", ErrInvalidString
@@ -42,6 +43,7 @@ func getSymbol(i *int, runes []rune) (symb string, _ error) {
 	}
 	return symb, nil
 }
+
 func getCount(i *int, runes []rune) (count int) {
 	count = 1
 	if *i > len(runes)-1 {
