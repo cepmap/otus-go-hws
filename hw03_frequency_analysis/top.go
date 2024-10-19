@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// var regexpPattern = regexp.MustCompile(`[^А-я-]|- `)
 var regexpPattern = regexp.MustCompile(`(?m)(-|!|\.|,|\s-|\(|\))*\s+`)
 
 type words struct {
