@@ -52,15 +52,40 @@ func TestTop10(t *testing.T) {
 	})
 
 	t.Run("numerals", func(t *testing.T) {
-		require.Equal(t, []string{"1", "11", "10", "12", "13", "14", "15", "16", "2", "23"}, Top10(text2))
+		expected := []string{
+			"1",
+			"11",
+			"10",
+			"12",
+			"13",
+			"14",
+			"15",
+			"16",
+			"2",
+			"23",
+		}
+		require.Equal(t, expected, Top10(text2))
 	})
 
 	t.Run("latinic", func(t *testing.T) {
-		require.Equal(t, []string{"work", "cat", "dog", "cry"}, Top10(text3))
+		expected := []string{"work", "cat", "dog", "cry"}
+		require.Equal(t, expected, Top10(text3))
 	})
 
 	t.Run("mixup", func(t *testing.T) {
-		require.Equal(t, []string{"языка", "mixup", "и", "английского", "бывает", "много", "не", "плакать", "потому", "работать"}, Top10(text4))
+		expected := []string{
+			"языка",
+			"mixup",
+			"и",
+			"английского",
+			"бывает",
+			"много",
+			"не",
+			"плакать",
+			"потому",
+			"работать",
+		}
+		require.Equal(t, expected, Top10(text4))
 	})
 
 	t.Run("positive test", func(t *testing.T) {
