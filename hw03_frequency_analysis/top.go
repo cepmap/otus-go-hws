@@ -1,4 +1,4 @@
-package hw03_frequency_analysis
+package hw03frequencyanalysis
 
 import (
 	"regexp"
@@ -27,7 +27,7 @@ func transformString(inputString string, regexpPatter *regexp.Regexp) []string {
 func makeStructSlice(inputSlice []string) []words {
 	wordsMap := make(map[string]int)
 	for _, word := range inputSlice {
-		wordsMap[word] = wordsMap[word] + 1
+		wordsMap[word]++
 	}
 	wordsDict := make([]words, 0)
 	for key, value := range wordsMap {
