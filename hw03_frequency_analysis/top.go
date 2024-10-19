@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-var regexpPattern = regexp.MustCompile(`[^А-я-]|- `)
+// var regexpPattern = regexp.MustCompile(`[^А-я-]|- `)
+var regexpPattern = regexp.MustCompile(`(?m)(-|!|\.|,|\s-|\(|\))*\s+`)
 
 type words struct {
 	word  string
@@ -49,7 +50,7 @@ func sortSlice(inSlice []words) []words {
 func getTopTen(inSlice []words) []string {
 	var returnSlice []string
 	if len(inSlice) != 0 {
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 10 && i < len(inSlice); i++ {
 			returnSlice = append(returnSlice, inSlice[i].word)
 		}
 	}
