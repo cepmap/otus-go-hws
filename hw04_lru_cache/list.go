@@ -48,6 +48,7 @@ func (l *list) PushFront(v interface{}) *ListItem {
 	l.len++
 	return l.firstNode
 }
+
 func (l *list) PushBack(v interface{}) *ListItem {
 	l.lastNode = &ListItem{Value: v, Next: nil, Prev: l.lastNode}
 	if l.len == 0 {
