@@ -47,7 +47,7 @@ func Run(tasks []Task, n, m int) error {
 		go func() {
 			defer wg.Done()
 			for task := range tasksChannel {
-				if errCounter.Get() > n {
+				if errCounter.Get() > m {
 					return
 				} else if task() != nil {
 					errCounter.Add()
@@ -57,8 +57,8 @@ func Run(tasks []Task, n, m int) error {
 	}
 
 	wg.Wait()
-	if errCounter.Get() < n+m {
-		ErrErrorsLimitExceeded = nil
+	if errCounter.Get() <= m {
+		return nil
 	}
 	return ErrErrorsLimitExceeded
 }
