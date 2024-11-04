@@ -34,16 +34,22 @@ func Run(tasks []Task, n, m int) error {
 		m = 0
 	}
 	errCounter := errCounter{}
-	tasksChannel := make(chan Task, len(tasks))
-	for i := 0; i < len(tasks); i++ {
-		tasksChannel <- tasks[i]
-	}
-	close(tasksChannel)
 
-	wg := sync.WaitGroup{}
+	var wg sync.WaitGroup
+	tasksChannel := make(chan Task)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for _, t := range tasks {
+			if errCounter.Get() <= m {
+				tasksChannel <- t
+			}
+		}
+		close(tasksChannel)
+	}()
 
-	wg.Add(n)
 	for i := 0; i < n; i++ {
+		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			for task := range tasksChannel {
