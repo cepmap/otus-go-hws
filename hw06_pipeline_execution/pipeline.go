@@ -33,7 +33,6 @@ func worker(done In, in In) Bi {
 					return
 				}
 				out <- v
-
 			}
 		}
 	}()
