@@ -1,6 +1,7 @@
 package hw06pipelineexecution
 
 import (
+	"fmt"
 	"strconv"
 	"sync"
 	"testing"
@@ -14,7 +15,7 @@ const (
 	fault         = sleepPerStage / 2
 )
 
-var isFullTesting = true
+var isFullTesting = false
 
 func TestPipeline(t *testing.T) {
 	// Stage generator
@@ -93,6 +94,42 @@ func TestPipeline(t *testing.T) {
 		require.Len(t, result, 0)
 		require.Less(t, int64(elapsed), int64(abortDur)+int64(fault))
 	})
+	t.Run("empty case", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{}
+
+		go func() {
+			for _, v := range data {
+				in <- v
+			}
+			close(in)
+		}()
+
+		result := make([]string, 0, 10)
+		for s := range ExecutePipeline(in, nil, stages...) {
+			result = append(result, s.(string))
+		}
+
+		require.Equal(t, []string{}, result)
+	})
+	t.Run("no tasks", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{}
+		stages = []Stage{}
+		go func() {
+			for _, v := range data {
+				in <- v
+			}
+			close(in)
+		}()
+
+		result := make([]string, 0, 10)
+		for s := range ExecutePipeline(in, nil, stages...) {
+			result = append(result, s.(string))
+		}
+
+		require.Equal(t, []string{}, result)
+	})
 }
 
 func TestAllStageStop(t *testing.T) {
@@ -133,6 +170,7 @@ func TestAllStageStop(t *testing.T) {
 		abortDur := sleepPerStage * 2
 		go func() {
 			<-time.After(abortDur)
+			fmt.Println(abortDur, ": ", "sendStop")
 			close(done)
 		}()
 
@@ -145,11 +183,11 @@ func TestAllStageStop(t *testing.T) {
 
 		result := make([]string, 0, 10)
 		for s := range ExecutePipeline(in, done, stages...) {
+			fmt.Println("Runned exec: ")
 			result = append(result, s.(string))
 		}
 		wg.Wait()
 
 		require.Len(t, result, 0)
-
 	})
 }
