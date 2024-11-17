@@ -14,40 +14,57 @@ var (
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
 )
 
-func Copy(fromPath, toPath string, offset, limit int64) error {
-	infile, err := os.Open(fromPath)
-	if err != nil {
-		return ErrUnsupportedFile
-	}
-	defer func(ifile *os.File) {
-		err := ifile.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(infile)
+func Copy(fromPath, toPath string, limit, offset int64) error {
 
-	nfile, err := os.Create(toPath)
+	inFile, err := os.Open(fromPath)
 	if err != nil {
 		return err
 	}
-	defer nfile.Close()
+	defer inFile.Close()
 
-	infileStat, err := infile.Stat()
+	inFileStat, err := inFile.Stat()
 	if err != nil {
 		return err
 	}
-
-	if offset > infileStat.Size() {
+	if offset > inFileStat.Size() {
 		return ErrOffsetExceedsFileSize
 	}
-
-	if infileStat.Size() < limit {
-		limit = infileStat.Size()
-	}
-
-	_, err = infile.Seek(offset, io.SeekStart)
+	_, err = inFile.Seek(offset, 0)
 	if err != nil {
 		return err
+	}
+
+	outFile, err := os.Create(toPath)
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
+
+	trigger := false
+
+	bufSize := 1024
+	if limit != 0 && limit < int64(bufSize) {
+		bufSize = int(limit)
+		trigger = true
+	}
+
+	buf := make([]byte, bufSize)
+	for {
+
+		r, err := inFile.Read(buf)
+		if err != nil && err != io.EOF {
+			log.Fatal(err)
+		}
+		_, wErr := outFile.Write(buf[:r])
+		if wErr != nil {
+			return wErr
+		}
+		if err == io.EOF {
+			break
+		}
+		if trigger {
+			break
+		}
 	}
 
 	return nil
