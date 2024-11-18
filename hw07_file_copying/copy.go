@@ -5,16 +5,23 @@ import (
 	"io"
 	"log"
 	"os"
-)
+	"syscall"
 
-//go run main.go copy.go -from testdata/input.txt -limit 0 -offset 0 -to testdata/output.txt
+	"github.com/cheggaaa/pb/v3"
+)
 
 var (
-	ErrUnsupportedFile       = errors.New("unsupported file")
-	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
+	ErrUnsupportedFile          = errors.New("unsupported file")
+	ErrOffsetExceedsFileSize    = errors.New("offset exceeds file size")
+	ErrSameFile                 = errors.New("input and output could not be the same")
+	ErrFileIsDir                = errors.New("file is a directory")
+	ErrNoLimitedDeviceOperation = errors.New("no limited device operation")
 )
 
-func Copy(fromPath, toPath string, limit, offset int64) error {
+func Copy(fromPath, toPath string, offset, limit int64) error {
+	if fromPath == toPath {
+		return ErrSameFile
+	}
 
 	inFile, err := os.Open(fromPath)
 	if err != nil {
@@ -22,49 +29,105 @@ func Copy(fromPath, toPath string, limit, offset int64) error {
 	}
 	defer inFile.Close()
 
-	inFileStat, err := inFile.Stat()
-	if err != nil {
-		return err
-	}
-	if offset > inFileStat.Size() {
-		return ErrOffsetExceedsFileSize
-	}
-	_, err = inFile.Seek(offset, 0)
-	if err != nil {
-		return err
-	}
-
 	outFile, err := os.Create(toPath)
 	if err != nil {
 		return err
 	}
 	defer outFile.Close()
 
-	trigger := false
-
-	bufSize := 1024
-	if limit != 0 && limit < int64(bufSize) {
-		bufSize = int(limit)
-		trigger = true
+	if err := checkFiles(inFile, outFile, limit); err != nil {
+		return err
 	}
 
-	buf := make([]byte, bufSize)
-	for {
+	inFileStat, err := inFile.Stat()
+	if err != nil {
+		return err
+	}
+	inLen := inFileStat.Size()
 
-		r, err := inFile.Read(buf)
+	log.Println(offset, inLen)
+	if offset > inLen {
+		return ErrOffsetExceedsFileSize
+	}
+
+	_, err = inFile.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+
+	var bSize int64
+	if inLen == 0 || (limit != 0 && inLen-offset > limit) {
+		bSize = limit
+	} else {
+		bSize = inLen - offset
+	}
+
+	pBar := pb.StartNew(int(bSize))
+	pBar.Set(pb.Bytes, true)
+
+	bytesCount := 4 * 1024
+	writeBuffer := make([]byte, bytesCount)
+	readCounter := 0
+	breakTrigger := false
+
+	for {
+		readActual := bytesCount
+		if limit != 0 && ((readCounter + bytesCount) > int(limit)) {
+			readActual = int(limit) - readCounter
+			breakTrigger = true
+		}
+
+		r, err := inFile.Read(writeBuffer[:readActual])
 		if err != nil && err != io.EOF {
-			log.Fatal(err)
+			return err
 		}
-		_, wErr := outFile.Write(buf[:r])
-		if wErr != nil {
-			return wErr
+		readCounter += r
+		if r < readActual {
+			readActual = r
 		}
+
 		if err == io.EOF {
 			break
 		}
-		if trigger {
+
+		outFile.Write(writeBuffer[:readActual])
+		pBar.Add(readActual)
+		if breakTrigger {
 			break
 		}
+	}
+	pBar.Finish()
+	return nil
+}
+
+func checkFiles(inFile, outFile *os.File, limit int64) error {
+	isDevice := false
+	files := []*os.File{inFile, outFile}
+	for _, file := range files {
+		fileInfo, err := file.Stat()
+		if err != nil {
+			return err
+		}
+
+		if fileInfo.IsDir() {
+			return ErrFileIsDir
+		}
+
+		linkInfo, err := os.Lstat(file.Name())
+		if err != nil {
+			return err
+		}
+		if linkInfo.Mode()&os.ModeSymlink != 0 {
+			return ErrUnsupportedFile
+		}
+
+		if fileInfo.Sys().(*syscall.Stat_t).Mode&syscall.S_IFBLK != 0 {
+			isDevice = true
+		}
+	}
+
+	if isDevice && limit == 0 {
+		return ErrNoLimitedDeviceOperation
 	}
 
 	return nil
