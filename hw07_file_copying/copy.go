@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"syscall"
 
 	"github.com/cheggaaa/pb/v3"
@@ -19,10 +20,17 @@ var (
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
-	if fromPath == toPath {
+	fromAbsPath, err := filepath.Abs(fromPath)
+	if err != nil {
+		return err
+	}
+	outAbsPath, err := filepath.Abs(toPath)
+	if err != nil {
+		return err
+	}
+	if fromAbsPath == outAbsPath {
 		return ErrSameFile
 	}
-
 	inFile, err := os.Open(fromPath)
 	if err != nil {
 		return err

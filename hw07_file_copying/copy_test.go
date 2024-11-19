@@ -44,7 +44,11 @@ func TestCopy(t *testing.T) {
 			require.Zero(t, bytes.Compare(expContent, dstContent))
 		})
 	}
-
+	t.Run("Same absolute path check", func(t *testing.T) {
+		dstPath := "./" + srcPath
+		err := Copy(srcPath, dstPath, 0, 0)
+		require.ErrorIs(t, err, ErrSameFile)
+	})
 	t.Run("offset exceeds file size", func(t *testing.T) {
 		offset := 70000
 		limit := 0
