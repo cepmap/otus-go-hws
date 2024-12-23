@@ -2,6 +2,7 @@ package hw09structvalidator
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -42,10 +43,67 @@ func TestValidate(t *testing.T) {
 		expectedErr error
 	}{
 		{
-			// Place your code here.
+			in: User{
+				ID:     "12345678-1234-1234-1234-123456789abc",
+				Name:   "John Doe",
+				Age:    25,
+				Email:  "some@example.com",
+				Role:   "admin",
+				Phones: []string{"12345678901"},
+			},
+			expectedErr: ValidationErrors{},
 		},
-		// ...
-		// Place your code here.
+		{
+			in: User{
+				ID:     "12345678-1234-1234-1234-123456789abc",
+				Name:   "John Doe",
+				Age:    2,
+				Email:  "johndoe@example.com",
+				Role:   "admin",
+				Phones: []string{"12345678901"},
+			},
+			expectedErr: ValidationErrors{
+				{Field: "Age", Err: ErrValidationMin},
+			},
+		},
+		{
+			in: User{
+				ID:     "12345678-1234-1234-1234-123456789abc",
+				Name:   "John Doe",
+				Age:    2,
+				Email:  "1234123",
+				Role:   "admin",
+				Phones: []string{"12345678901"},
+			},
+			expectedErr: ValidationErrors{
+				{Field: "Age", Err: ErrValidationMin},
+				{Field: "Email", Err: ErrInvalidRegexp},
+			},
+		},
+		{
+			in: App{
+				Version: "1.0.0.",
+			},
+			expectedErr: ValidationErrors{
+				{Field: "Version", Err: ErrValidationLen},
+			},
+		},
+		{
+			in: Token{
+				Header:    []byte(`{"alg":"HS256","typ":"JWT"}`),
+				Payload:   []byte(`{"alg":"HS256","typ":"JWT"}`),
+				Signature: []byte(`{"alg":"HS256","typ":"JWT"}`),
+			},
+			expectedErr: ValidationErrors{},
+		},
+		{
+			in: Response{
+				Code: 407,
+			},
+			expectedErr: ValidationErrors{
+				{Field: "Code", Err: ErrValidationIn},
+			},
+		},
 	}
 
 	for i, tt := range tests {
@@ -53,8 +111,28 @@ func TestValidate(t *testing.T) {
 			tt := tt
 			t.Parallel()
 
-			// Place your code here.
-			_ = tt
+			var vErr, exprErr ValidationErrors
+			err := Validate(tt.in)
+
+			if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
+				if !errorsMatch(vErr, exprErr) {
+					t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
+				}
+			}
 		})
 	}
+}
+
+func errorsMatch(err1, err2 ValidationErrors) bool {
+	if len(err1) != len(err2) {
+		return false
+	}
+
+	for i := range err1 {
+		if !errors.Is(err1[i].Err, err2[i].Err) {
+			return false
+		}
+	}
+
+	return true
 }
