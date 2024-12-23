@@ -1,4 +1,4 @@
-module github.com/fixme_my_friend/hw08_envdir_tool
+module github.com/cepmap/otus-go-hws/hw08_envdir_tool
 
 go 1.22
 

@@ -23,9 +23,13 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 			command.Env = append(command.Env, strEnvVar)
 		}
 	}
+
+	command.Stdin = os.Stdin
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
+
 	var exitCode int
+
 	if err := command.Run(); err != nil {
 		var exitError *exec.ExitError
 		if errors.As(err, &exitError) {
