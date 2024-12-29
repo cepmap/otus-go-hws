@@ -21,6 +21,16 @@ type (
 		meta   json.RawMessage //nolint:unused
 	}
 
+	BrokenUser struct {
+		ID     string `json:"id" validate:":"`
+		Name   string
+		Age    int             `validate:"min:18|max:50"`
+		Email  string          `validate:"regexp:^\\w+@\\w+\\.\\w+$"`
+		Role   UserRole        `validate:"in:admin,stuff"`
+		Phones []string        `validate:"len:11"`
+		meta   json.RawMessage //nolint:unused
+	}
+
 	App struct {
 		Version string `validate:"len:5"`
 	}
@@ -52,6 +62,17 @@ func TestValidate(t *testing.T) {
 				Phones: []string{"12345678901"},
 			},
 			expectedErr: ValidationErrors{},
+		},
+		{
+			in: BrokenUser{
+				ID:     "12345678-1234-1234-1234-123456789abc",
+				Name:   "John Doe",
+				Age:    25,
+				Email:  "some@example.com",
+				Role:   "admin",
+				Phones: []string{"12345678901"},
+			},
+			expectedErr: ErrInvalidValidationRuleValue,
 		},
 		{
 			in: User{
@@ -113,11 +134,12 @@ func TestValidate(t *testing.T) {
 
 			var vErr, exprErr ValidationErrors
 			err := Validate(tt.in)
-
 			if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
 				if !errorsMatch(vErr, exprErr) {
 					t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
 				}
+			} else if !errors.Is(err, tt.expectedErr) {
+				t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
 			}
 		})
 	}
