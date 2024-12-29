@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 type UserRole string
@@ -20,17 +22,6 @@ type (
 		Phones []string        `validate:"len:11"`
 		meta   json.RawMessage //nolint:unused
 	}
-
-	BrokenUser struct {
-		ID     string `json:"id" validate:":"`
-		Name   string
-		Age    int             `validate:"min:18|max:50"`
-		Email  string          `validate:"regexp:^\\w+@\\w+\\.\\w+$"`
-		Role   UserRole        `validate:"in:admin,stuff"`
-		Phones []string        `validate:"len:11"`
-		meta   json.RawMessage //nolint:unused
-	}
-
 	App struct {
 		Version string `validate:"len:5"`
 	}
@@ -62,17 +53,6 @@ func TestValidate(t *testing.T) {
 				Phones: []string{"12345678901"},
 			},
 			expectedErr: ValidationErrors{},
-		},
-		{
-			in: BrokenUser{
-				ID:     "12345678-1234-1234-1234-123456789abc",
-				Name:   "John Doe",
-				Age:    25,
-				Email:  "some@example.com",
-				Role:   "admin",
-				Phones: []string{"12345678901"},
-			},
-			expectedErr: ErrInvalidValidationRuleValue,
 		},
 		{
 			in: User{
@@ -135,16 +115,9 @@ func TestValidate(t *testing.T) {
 			var vErr, exprErr ValidationErrors
 			err := Validate(tt.in)
 
-			var validationErrors ValidationErrors
-			switch {
-			case errors.As(tt.expectedErr, &validationErrors):
-				if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
-					if !errorsMatch(vErr, exprErr) {
-						t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
-					}
-				}
-			default:
-				if !errors.Is(err, tt.expectedErr) {
+			// var validationErrors ValidationErrors
+			if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
+				if !errorsMatch(vErr, exprErr) {
 					t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
 				}
 			}
@@ -164,4 +137,47 @@ func errorsMatch(err1, err2 ValidationErrors) bool {
 	}
 
 	return true
+}
+
+func TestNonValidateError(t *testing.T) {
+	var role UserRole = "user"
+	type (
+		SomeData struct {
+			Data string `validate:"len:"`
+		}
+		AnotherSomeData struct {
+			Data string `validate:"len"`
+		}
+	)
+
+	tests := []struct {
+		in          interface{}
+		expectedErr error
+	}{
+		{
+			in:          role,
+			expectedErr: ErrUnsupportedInputKind,
+		},
+		{
+			in: SomeData{
+				Data: "data",
+			},
+			expectedErr: ErrInvalidValidationRuleValue,
+		},
+		{
+			in: AnotherSomeData{
+				Data: "data",
+			},
+			expectedErr: ErrInvalidValidationRule,
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
+			tt := tt
+			t.Parallel()
+			err := Validate(tt.in)
+			require.ErrorIs(t, err, tt.expectedErr)
+		})
+	}
 }
