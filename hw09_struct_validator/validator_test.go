@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
 	"testing"
 )
+
+var mu sync.Mutex
 
 type UserRole string
 
@@ -109,7 +112,8 @@ func TestValidate(t *testing.T) {
 		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
 			tt := tt
 			t.Parallel()
-
+			mu.Lock()
+			defer mu.Unlock()
 			var vErr, exprErr ValidationErrors
 			err := Validate(tt.in)
 
