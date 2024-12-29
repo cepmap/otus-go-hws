@@ -44,9 +44,8 @@ var (
 	ErrValidationMin = errors.New("value less than a required minimum")
 	ErrValidationMax = errors.New("value more than a required maximum")
 
-	ErrInvalidRegexp    = errors.New("invalid regexp")
-	ErrInvalidString    = errors.New("invalid string")
-	ErrInvalidFieldType = errors.New("invalid field type")
+	ErrInvalidRegexp = errors.New("invalid regexp")
+	ErrInvalidString = errors.New("invalid string")
 )
 
 func Validate(v interface{}) error {
@@ -120,10 +119,10 @@ func validate(rules, fieldName string, fieldVal reflect.Value) error {
 	if rule[1] == "" {
 		return ErrInvalidValidationRuleValue
 	}
-	switch {
-	case fieldVal.Kind() == reflect.String:
+	switch fieldVal.Kind() {
+	case reflect.String:
 		return validateStr(rule, fieldName, fieldVal)
-	case fieldVal.Kind() == reflect.Int:
+	case reflect.Int:
 		return validateInt(rule, fieldName, fieldVal)
 	}
 

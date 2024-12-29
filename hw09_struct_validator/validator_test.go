@@ -134,12 +134,19 @@ func TestValidate(t *testing.T) {
 
 			var vErr, exprErr ValidationErrors
 			err := Validate(tt.in)
-			if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
-				if !errorsMatch(vErr, exprErr) {
+
+			var validationErrors ValidationErrors
+			switch {
+			case errors.As(tt.expectedErr, &validationErrors):
+				if errors.As(err, &vErr) && errors.As(tt.expectedErr, &exprErr) {
+					if !errorsMatch(vErr, exprErr) {
+						t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
+					}
+				}
+			default:
+				if !errors.Is(err, tt.expectedErr) {
 					t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
 				}
-			} else if !errors.Is(err, tt.expectedErr) {
-				t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
 			}
 		})
 	}
