@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 type UserRole string
@@ -177,7 +175,9 @@ func TestNonValidateError(t *testing.T) {
 			tt := tt
 			t.Parallel()
 			err := Validate(tt.in)
-			require.ErrorIs(t, err, tt.expectedErr)
+			if !errors.Is(err, tt.expectedErr) {
+				t.Errorf("unexpected error: got %v, want %v", err, tt.expectedErr)
+			}
 		})
 	}
 }
