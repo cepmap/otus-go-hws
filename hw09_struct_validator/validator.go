@@ -46,6 +46,8 @@ var (
 
 	ErrInvalidRegexp = errors.New("invalid regexp")
 	ErrInvalidString = errors.New("invalid string")
+
+	ErrUnsupportedFieldType = errors.New("unsupported field type")
 )
 
 func Validate(v interface{}) error {
@@ -72,7 +74,7 @@ func Validate(v interface{}) error {
 func validateFields(val reflect.Value, veList *ValidationErrors) error {
 	for i := 0; i < val.NumField(); i++ {
 		field := val.Type().Field(i)
-		fieldVal := val.Field(i) //Value
+		fieldVal := val.Field(i) // Value
 
 		if field.Tag.Get("validate") == "" {
 			continue
@@ -95,11 +97,11 @@ func validateFields(val reflect.Value, veList *ValidationErrors) error {
 	}
 	return veList
 }
+
 func validateField(field reflect.StructField, fieldVal reflect.Value, veList *ValidationErrors) error {
 	vaRules := strings.Split(field.Tag.Get("validate"), "|")
 	for _, rule := range vaRules {
 		if err := validate(rule, field.Name, fieldVal); err != nil {
-
 			if errors.As(err, &ValidationError{}) {
 				fmt.Println(err)
 				*veList = append(*veList, ValidationError{Field: field.Name, Err: errors.Unwrap(err)})
@@ -119,14 +121,14 @@ func validate(rules, fieldName string, fieldVal reflect.Value) error {
 	if rule[1] == "" {
 		return ErrInvalidValidationRuleValue
 	}
-	switch fieldVal.Kind() {
+	switch fieldVal.Kind() { //nolint: exhaustive
 	case reflect.String:
 		return validateStr(rule, fieldName, fieldVal)
 	case reflect.Int:
 		return validateInt(rule, fieldName, fieldVal)
+	default:
+		return ErrUnsupportedFieldType
 	}
-
-	return nil
 }
 
 func validateInt(rule []string, fieldName string, fieldVal reflect.Value) error {
@@ -139,7 +141,6 @@ func validateInt(rule []string, fieldName string, fieldVal reflect.Value) error 
 			return err
 		}
 		if fieldVal.Int() < int64(minVal) {
-
 			return ValidationError{Field: fieldName, Err: ErrValidationMin}
 		}
 	case "max":
@@ -164,6 +165,7 @@ func validateInt(rule []string, fieldName string, fieldVal reflect.Value) error 
 	}
 	return nil
 }
+
 func validateStr(rule []string, fieldName string, fieldVal reflect.Value) error {
 	ruleName := rule[0]
 	ruleValue := rule[1]
