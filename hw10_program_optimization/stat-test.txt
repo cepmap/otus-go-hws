@@ -1,0 +1,19 @@
+// Начальный код
+=== RUN   TestGetDomainStat_Time_And_Memory
+    stats_optimization_test.go:46: time used: 340.031ms / 300ms
+    stats_optimization_test.go:47: memory used: 308Mb / 30Mb
+
+//Переработанная логика без JSON:
+=== RUN   TestGetDomainStat_Time_And_Memory
+    stats_optimization_test.go:46: time used: 183.0469ms / 300ms
+    stats_optimization_test.go:47: memory used: 26Mb / 30Mb
+
+//А теперь fastjson
+=== RUN   TestGetDomainStat_Time_And_Memory
+    stats_optimization_test.go:46: time used: 162.1435ms / 300ms
+    stats_optimization_test.go:47: memory used: 169Mb / 30Mb
+
+//А теперь easyjson
+=== RUN   TestGetDomainStat_Time_And_Memory
+    stats_optimization_test.go:46: time used: 113.8522ms / 300ms
+    stats_optimization_test.go:47: memory used: 13Mb / 30Mb
