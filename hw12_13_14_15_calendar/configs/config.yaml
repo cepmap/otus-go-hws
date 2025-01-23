@@ -1,0 +1,12 @@
+logger:
+  level: debug
+storage:
+  type: db
+db:
+  name: test
+  url: test
+  user: test
+  password: test
+server:
+  addr:
+  port:
