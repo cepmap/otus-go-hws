@@ -56,7 +56,7 @@ func (s *Server) Stop(ctx context.Context) error {
 }
 
 func SayHello() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) { //nolint
 		if _, err := w.Write([]byte("Hello World!\n")); err != nil {
 			logger.Error(fmt.Sprintf("failed to write response: %v", err))
 		}
