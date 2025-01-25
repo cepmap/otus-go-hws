@@ -1,12 +1,13 @@
 logger:
   level: debug
 storage:
-  type: db
+  # memory | db
+  type: memory
 db:
-  name: test
-  url: test
-  user: test
-  password: test
+  name: postgres
+  url: localhost:15432
+  user: postgres
+  password: postgres
 server:
-  addr:
-  port:
+  host: "0.0.0.0"
+  port: "8080"

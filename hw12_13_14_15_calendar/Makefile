@@ -8,7 +8,7 @@ build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/calendar
 
 run: build
-	$(BIN) -c ./configs/config.yaml
+	$(BIN) --config ./configs/config.yaml
 build-img:
 	docker build \
 		--build-arg=LDFLAGS="$(LDFLAGS)" \
@@ -17,6 +17,10 @@ build-img:
 
 run-img: build-img
 	docker run $(DOCKER_IMG)
+run-postgres:
+	docker run --rm -p 15432:5432  --name  go-calendar-postgres -e POSTGRES_PASSWORD=postgres -d postgres
+stop-postgres:
+	docker stop go-calendar-postgres
 
 version: build
 	$(BIN) version
@@ -29,5 +33,10 @@ install-lint-deps:
 
 lint: install-lint-deps
 	golangci-lint run ./...
+
+migrate-up:
+	goose --dir=./migrations postgres "host=127.0.0.1 port=15432 user=postgres password=postgres dbname=postgres sslmode=disable" up
+migrate-down:
+	goose --dir=./migrations postgres "host=127.0.0.1 port=15432 user=postgres password=postgres dbname=postgres sslmode=disable" down
 
 .PHONY: build run build-img run-img version test lint
