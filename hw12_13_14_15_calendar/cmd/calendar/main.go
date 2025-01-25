@@ -3,22 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
-	sqlstorage "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage/sql"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/http"
+	sqlstorage "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
-var configFile string
 var AppConfig config.Config
 
-//func init() {
+// func init() {
 //	flag.StringVarP(&configFile, "config", "c", "config.yaml", "config file")
 //}
 
@@ -46,11 +45,12 @@ func main() {
 
 	calendar := app.New(storage)
 
-	server := internalhttp.NewServer(calendar, fmt.Sprintf("%v:%v", config.Settings.Server.Host, config.Settings.Server.Port))
-
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
+
+	server := internalhttp.NewServer(calendar,
+		fmt.Sprintf("%v:%v", config.Settings.Server.Host, config.Settings.Server.Port))
 
 	go func() {
 		<-ctx.Done()

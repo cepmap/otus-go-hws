@@ -3,16 +3,16 @@ package sqlstorage
 import (
 	"context"
 	"fmt"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
+	"net/url"
+	"os"
+	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	"github.com/google/uuid"
 	_ "github.com/jackc/pgx/stdlib" // justifying
 	"github.com/jmoiron/sqlx"
-	"net/url"
-	"os"
-	"time"
 )
 
 type Storage struct { // TODO

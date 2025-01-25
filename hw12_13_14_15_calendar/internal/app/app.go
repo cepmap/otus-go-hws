@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	"github.com/google/uuid"
-	"time"
 )
 
 type App struct {
@@ -30,9 +31,21 @@ func New(storage Storage) *App {
 }
 
 func (a *App) CreateEvent(ctx context.Context, id, title string) error {
+	// linter
+	_ = id
+	_ = title
 	return a.storage.AddEvent(ctx, &storage.Event{})
 }
 
-func (a *App) EditEvent(ctx context.Context, id, title string) error         { return nil }
-func (a *App) DeleteEvent(ctx context.Context, id string) error              { return nil }
-func (a *App) GetEvents(ctx context.Context, id string) (interface{}, error) { return nil, nil }
+func (a *App) EditEvent() error                { return nil }
+func (a *App) DeleteEvent() error              { return nil }
+func (a *App) GetEvents() (interface{}, error) { return nil, nil }
+
+// Commented for linter for future
+// func (a *App) CreateEvent(ctx context.Context, id, title string) error {
+//	return a.storage.AddEvent(ctx, &storage.Event{})
+//}
+//
+// func (a *App) EditEvent(ctx context.Context, id, title string) error         { return nil }
+// func (a *App) DeleteEvent(ctx context.Context, id string) error              { return nil }
+// func (a *App) GetEvents(ctx context.Context, id string) (interface{}, error) { return nil, nil }
