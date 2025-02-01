@@ -2,25 +2,50 @@ package app
 
 import (
 	"context"
+	"time"
+
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
+	"github.com/google/uuid"
 )
 
-type App struct { // TODO
+type App struct {
+	storage Storage
 }
 
 type Logger interface { // TODO
 }
 
-type Storage interface { // TODO
+type Storage interface {
+	InitStorage()
+	AddEvent(ctx context.Context, event *storage.Event) error
+	GetEvent(ctx context.Context, id uuid.UUID) (*storage.Event, error)
+	GetEventsForPeriod(ctx context.Context, from, to time.Time) ([]storage.Event, error)
+	ListEvents(ctx context.Context, limit, low uint64) ([]storage.Event, error)
+	UpdateEvent(ctx context.Context, event *storage.Event) error
+	DeleteEvent(ctx context.Context, id uuid.UUID) error
+	Close() error
 }
 
-func New(logger Logger, storage Storage) *App {
-	return &App{}
+func New(storage Storage) *App {
+	return &App{storage: storage}
 }
 
 func (a *App) CreateEvent(ctx context.Context, id, title string) error {
-	// TODO
-	return nil
-	// return a.storage.CreateEvent(storage.Event{ID: id, Title: title})
+	// linter
+	_ = id
+	_ = title
+	return a.storage.AddEvent(ctx, &storage.Event{})
 }
 
-// TODO
+func (a *App) EditEvent() error                { return nil }
+func (a *App) DeleteEvent() error              { return nil }
+func (a *App) GetEvents() (interface{}, error) { return nil, nil }
+
+// Commented for linter for future
+// func (a *App) CreateEvent(ctx context.Context, id, title string) error {
+//	return a.storage.AddEvent(ctx, &storage.Event{})
+//}
+//
+// func (a *App) EditEvent(ctx context.Context, id, title string) error         { return nil }
+// func (a *App) DeleteEvent(ctx context.Context, id string) error              { return nil }
+// func (a *App) GetEvents(ctx context.Context, id string) (interface{}, error) { return nil, nil }
