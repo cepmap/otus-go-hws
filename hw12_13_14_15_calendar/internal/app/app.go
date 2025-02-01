@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"time"
 
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
@@ -9,43 +11,49 @@ import (
 )
 
 type App struct {
-	storage Storage
+	storage storage.Storage
 }
 
-type Logger interface { // TODO
-}
-
-type Storage interface {
-	InitStorage()
-	AddEvent(ctx context.Context, event *storage.Event) error
-	GetEvent(ctx context.Context, id uuid.UUID) (*storage.Event, error)
-	GetEventsForPeriod(ctx context.Context, from, to time.Time) ([]storage.Event, error)
-	ListEvents(ctx context.Context, limit, low uint64) ([]storage.Event, error)
-	UpdateEvent(ctx context.Context, event *storage.Event) error
-	DeleteEvent(ctx context.Context, id uuid.UUID) error
-	Close() error
-}
-
-func New(storage Storage) *App {
+func New(storage storage.Storage) *App {
+	logger.Info("app start")
 	return &App{storage: storage}
 }
 
-func (a *App) CreateEvent(ctx context.Context, id, title string) error {
-	// linter
-	_ = id
-	_ = title
-	return a.storage.AddEvent(ctx, &storage.Event{})
+func (a *App) AddEvent(ctx context.Context, event *models.Event) (uuid.UUID, error) {
+	if event.ID == uuid.Nil {
+		event.ID = uuid.New()
+	}
+	return event.ID, a.storage.AddEvent(ctx, event)
 }
 
-func (a *App) EditEvent() error                { return nil }
-func (a *App) DeleteEvent() error              { return nil }
-func (a *App) GetEvents() (interface{}, error) { return nil, nil }
+func (a *App) GetEvent(ctx context.Context, id uuid.UUID) (*models.Event, error) {
+	return a.storage.GetEvent(ctx, id)
+}
 
-// Commented for linter for future
-// func (a *App) CreateEvent(ctx context.Context, id, title string) error {
-//	return a.storage.AddEvent(ctx, &storage.Event{})
-//}
-//
-// func (a *App) EditEvent(ctx context.Context, id, title string) error         { return nil }
-// func (a *App) DeleteEvent(ctx context.Context, id string) error              { return nil }
-// func (a *App) GetEvents(ctx context.Context, id string) (interface{}, error) { return nil, nil }
+func (a *App) GetEventsForPeriod(ctx context.Context, since, dateTo time.Time) ([]models.Event, error) {
+	return a.storage.GetEventsForPeriod(ctx, since, dateTo)
+}
+
+func (a *App) ListEvents(ctx context.Context, limit, low uint64) ([]models.Event, error) {
+	return a.storage.ListEvents(ctx, limit, low)
+}
+
+func (a *App) UpdateEvent(ctx context.Context, event *models.Event) error {
+	return a.storage.UpdateEvent(ctx, event)
+}
+
+func (a *App) DeleteEvent(ctx context.Context, id uuid.UUID) error {
+	return a.storage.DeleteEvent(ctx, id)
+}
+
+func (a *App) GetEventsOfDay(ctx context.Context, since time.Time) ([]models.Event, error) {
+	return a.storage.GetEventsForPeriod(ctx, since, since.AddDate(0, 0, 1))
+}
+
+func (a *App) GetEventsOfWeek(ctx context.Context, since time.Time) ([]models.Event, error) {
+	return a.storage.GetEventsForPeriod(ctx, since, since.AddDate(0, 0, 7))
+}
+
+func (a *App) GetEventsOfMonth(ctx context.Context, since time.Time) ([]models.Event, error) {
+	return a.storage.GetEventsForPeriod(ctx, since, since.AddDate(0, 1, 0))
+}
