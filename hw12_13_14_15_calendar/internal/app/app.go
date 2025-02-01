@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	"github.com/google/uuid"
 )

@@ -2,9 +2,9 @@ package storage
 
 import (
 	"context"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/google/uuid"
 )
 

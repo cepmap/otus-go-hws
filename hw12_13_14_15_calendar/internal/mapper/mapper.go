@@ -3,11 +3,12 @@ package mapper
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
 )
 
 func AddEventCommand(req *pbapp.AddEventRequest) (*models.Event, error) {

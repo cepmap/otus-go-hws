@@ -3,13 +3,14 @@ package internalhttp
 import (
 	"context"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 func TestAppMockGetEvent(t *testing.T) {

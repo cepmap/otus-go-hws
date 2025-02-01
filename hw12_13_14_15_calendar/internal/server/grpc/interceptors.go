@@ -3,11 +3,12 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"net"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
-	"net"
-	"time"
 )
 
 const timeFormat = "01/Jan/2005:12:00:00 -0400"

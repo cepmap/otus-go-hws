@@ -2,12 +2,13 @@ package grpc
 
 import (
 	"fmt"
+	"net"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/api"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"google.golang.org/grpc"
-	"net"
 )
 
 func NewServer(app *app.App, addr string) *Server {

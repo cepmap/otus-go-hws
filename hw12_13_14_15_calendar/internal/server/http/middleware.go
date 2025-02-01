@@ -2,10 +2,11 @@ package internalhttp
 
 import (
 	"fmt"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
-	"github.com/urfave/negroni"
 	"net/http"
 	"time"
+
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
+	"github.com/urfave/negroni"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {

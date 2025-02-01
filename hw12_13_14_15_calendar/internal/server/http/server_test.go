@@ -5,15 +5,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"time"
 )
 
 func TestServerHandlers(t *testing.T) {
@@ -99,8 +100,6 @@ func TestServerHandlers(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
-
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 

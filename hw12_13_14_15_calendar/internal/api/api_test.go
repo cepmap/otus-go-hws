@@ -2,6 +2,10 @@ package api
 
 import (
 	"context"
+	"net"
+	"testing"
+	"time"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
@@ -13,9 +17,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"net"
-	"testing"
-	"time"
 )
 
 const bufferSize = 1024 * 1024
@@ -43,9 +44,8 @@ func (s *apiTestSuite) SetupSuite() {
 }
 
 func (s *apiTestSuite) SetupTest() {
-	conn, err := grpc.DialContext(
-		context.Background(), "api_test",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+	conn, err := grpc.NewClient("passthrough://bufnet",
+		grpc.WithContextDialer(func(ctx context.Context, addr string) (net.Conn, error) { //nolint
 			return s.listener.Dial()
 		}),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,6 +13,7 @@ import (
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	internalgrpc "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/grpc"
 	internalhttp "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/http"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	memorystorage "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage/memory"
 	sqlstorage "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage/sql"
 )

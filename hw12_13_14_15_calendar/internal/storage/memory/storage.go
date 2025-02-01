@@ -2,12 +2,12 @@ package memorystorage
 
 import (
 	"context"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"sort"
 	"sync"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/google/uuid"
 )
 
@@ -128,11 +128,4 @@ func (s *Storage) DeleteEvent(_ context.Context, id uuid.UUID) error {
 func (s *Storage) contains(id uuid.UUID) bool {
 	_, ok := s.events[id]
 	return ok
-}
-
-func min(x, y uint64) uint64 {
-	if x < y {
-		return x
-	}
-	return y
 }

@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/mapper"
@@ -22,12 +23,13 @@ func (a *api) AddEvent(ctx context.Context, req *pbapp.AddEventRequest) (*pbapp.
 	if err != nil {
 		return nil, fmt.Errorf("invalid request: %w", err)
 	}
-	eventId, err := a.app.AddEvent(ctx, cmd)
+	eventID, err := a.app.AddEvent(ctx, cmd)
 	if err != nil {
 		return nil, fmt.Errorf("failed to add event: %w", err)
 	}
-	return &pbapp.AddEventResponse{EventId: eventId.String()}, nil
+	return &pbapp.AddEventResponse{EventId: eventID.String()}, nil
 }
+
 func (a *api) UpdateEvent(ctx context.Context, req *pbapp.UpdateEventRequest) (*pbapp.UpdateEventResponse, error) {
 	event, err := mapper.Event(req)
 	if err != nil {
