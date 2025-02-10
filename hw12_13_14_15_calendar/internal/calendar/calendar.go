@@ -1,10 +1,9 @@
-package app
+package calendar
 
 import (
 	"context"
 	"time"
 
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/storage"
 	"github.com/google/uuid"
@@ -15,7 +14,6 @@ type App struct {
 }
 
 func New(storage storage.Storage) *App {
-	logger.Info("app start")
 	return &App{storage: storage}
 }
 

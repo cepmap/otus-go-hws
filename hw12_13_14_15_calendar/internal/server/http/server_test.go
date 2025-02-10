@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server/mocks"
 	"github.com/google/uuid"
@@ -111,7 +111,7 @@ func TestServerHandlers(t *testing.T) {
 			require.NoError(t, err)
 
 			appMock := tc.appMock(t)
-			serv := NewServer(appMock, fmt.Sprintf("%v:%v", "0.0.0.0", "8081"))
+			serv := NewServer(appMock, &config.Server{Host: "0.0.0.0", HTTPPort: "8081"})
 
 			rr := httptest.NewRecorder()
 			serv.srv.Handler.ServeHTTP(rr, req)

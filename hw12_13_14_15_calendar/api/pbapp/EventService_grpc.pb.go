@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	App_AddEvent_FullMethodName         = "/app.App/AddEvent"
-	App_UpdateEvent_FullMethodName      = "/app.App/UpdateEvent"
-	App_DeleteEvent_FullMethodName      = "/app.App/DeleteEvent"
-	App_GetEventsOfDay_FullMethodName   = "/app.App/GetEventsOfDay"
-	App_GetEventsOfWeek_FullMethodName  = "/app.App/GetEventsOfWeek"
-	App_GetEventsOfMonth_FullMethodName = "/app.App/GetEventsOfMonth"
+	App_AddEvent_FullMethodName         = "/calendar.App/AddEvent"
+	App_UpdateEvent_FullMethodName      = "/calendar.App/UpdateEvent"
+	App_DeleteEvent_FullMethodName      = "/calendar.App/DeleteEvent"
+	App_GetEventsOfDay_FullMethodName   = "/calendar.App/GetEventsOfDay"
+	App_GetEventsOfWeek_FullMethodName  = "/calendar.App/GetEventsOfWeek"
+	App_GetEventsOfMonth_FullMethodName = "/calendar.App/GetEventsOfMonth"
 )
 
 // AppClient is the client API for App service.
@@ -278,7 +278,7 @@ func _App_GetEventsOfMonth_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var App_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "app.App",
+	ServiceName: "calendar.App",
 	HandlerType: (*AppServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

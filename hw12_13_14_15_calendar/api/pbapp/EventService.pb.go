@@ -620,42 +620,42 @@ func file_EventService_proto_rawDescGZIP() []byte {
 
 var file_EventService_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_EventService_proto_goTypes = []any{
-	(*Event)(nil),                 // 0: app.Event
-	(*AddEventRequest)(nil),       // 1: app.AddEventRequest
-	(*AddEventResponse)(nil),      // 2: app.AddEventResponse
-	(*UpdateEventRequest)(nil),    // 3: app.UpdateEventRequest
-	(*UpdateEventResponse)(nil),   // 4: app.UpdateEventResponse
-	(*DeleteEventRequest)(nil),    // 5: app.DeleteEventRequest
-	(*DeleteEventResponse)(nil),   // 6: app.DeleteEventResponse
-	(*GetEventsRequest)(nil),      // 7: app.GetEventsRequest
-	(*GetEventsResponse)(nil),     // 8: app.GetEventsResponse
+	(*Event)(nil),                 // 0: calendar.Event
+	(*AddEventRequest)(nil),       // 1: calendar.AddEventRequest
+	(*AddEventResponse)(nil),      // 2: calendar.AddEventResponse
+	(*UpdateEventRequest)(nil),    // 3: calendar.UpdateEventRequest
+	(*UpdateEventResponse)(nil),   // 4: calendar.UpdateEventResponse
+	(*DeleteEventRequest)(nil),    // 5: calendar.DeleteEventRequest
+	(*DeleteEventResponse)(nil),   // 6: calendar.DeleteEventResponse
+	(*GetEventsRequest)(nil),      // 7: calendar.GetEventsRequest
+	(*GetEventsResponse)(nil),     // 8: calendar.GetEventsResponse
 	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
 	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
 }
 var file_EventService_proto_depIdxs = []int32{
-	9,  // 0: app.Event.date_start:type_name -> google.protobuf.Timestamp
-	9,  // 1: app.Event.date_end:type_name -> google.protobuf.Timestamp
-	9,  // 2: app.Event.date_notification:type_name -> google.protobuf.Timestamp
-	9,  // 3: app.AddEventRequest.date_start:type_name -> google.protobuf.Timestamp
-	9,  // 4: app.AddEventRequest.date_end:type_name -> google.protobuf.Timestamp
-	9,  // 5: app.AddEventRequest.date_notification:type_name -> google.protobuf.Timestamp
-	0,  // 6: app.UpdateEventRequest.event:type_name -> app.Event
-	10, // 7: app.UpdateEventResponse._:type_name -> google.protobuf.Empty
-	10, // 8: app.DeleteEventResponse._:type_name -> google.protobuf.Empty
-	9,  // 9: app.GetEventsRequest.since:type_name -> google.protobuf.Timestamp
-	0,  // 10: app.GetEventsResponse.events:type_name -> app.Event
-	1,  // 11: app.App.AddEvent:input_type -> app.AddEventRequest
-	3,  // 12: app.App.UpdateEvent:input_type -> app.UpdateEventRequest
-	5,  // 13: app.App.DeleteEvent:input_type -> app.DeleteEventRequest
-	7,  // 14: app.App.GetEventsOfDay:input_type -> app.GetEventsRequest
-	7,  // 15: app.App.GetEventsOfWeek:input_type -> app.GetEventsRequest
-	7,  // 16: app.App.GetEventsOfMonth:input_type -> app.GetEventsRequest
-	2,  // 17: app.App.AddEvent:output_type -> app.AddEventResponse
-	4,  // 18: app.App.UpdateEvent:output_type -> app.UpdateEventResponse
-	6,  // 19: app.App.DeleteEvent:output_type -> app.DeleteEventResponse
-	8,  // 20: app.App.GetEventsOfDay:output_type -> app.GetEventsResponse
-	8,  // 21: app.App.GetEventsOfWeek:output_type -> app.GetEventsResponse
-	8,  // 22: app.App.GetEventsOfMonth:output_type -> app.GetEventsResponse
+	9,  // 0: calendar.Event.date_start:type_name -> google.protobuf.Timestamp
+	9,  // 1: calendar.Event.date_end:type_name -> google.protobuf.Timestamp
+	9,  // 2: calendar.Event.date_notification:type_name -> google.protobuf.Timestamp
+	9,  // 3: calendar.AddEventRequest.date_start:type_name -> google.protobuf.Timestamp
+	9,  // 4: calendar.AddEventRequest.date_end:type_name -> google.protobuf.Timestamp
+	9,  // 5: calendar.AddEventRequest.date_notification:type_name -> google.protobuf.Timestamp
+	0,  // 6: calendar.UpdateEventRequest.event:type_name -> calendar.Event
+	10, // 7: calendar.UpdateEventResponse._:type_name -> google.protobuf.Empty
+	10, // 8: calendar.DeleteEventResponse._:type_name -> google.protobuf.Empty
+	9,  // 9: calendar.GetEventsRequest.since:type_name -> google.protobuf.Timestamp
+	0,  // 10: calendar.GetEventsResponse.events:type_name -> calendar.Event
+	1,  // 11: calendar.App.AddEvent:input_type -> calendar.AddEventRequest
+	3,  // 12: calendar.App.UpdateEvent:input_type -> calendar.UpdateEventRequest
+	5,  // 13: calendar.App.DeleteEvent:input_type -> calendar.DeleteEventRequest
+	7,  // 14: calendar.App.GetEventsOfDay:input_type -> calendar.GetEventsRequest
+	7,  // 15: calendar.App.GetEventsOfWeek:input_type -> calendar.GetEventsRequest
+	7,  // 16: calendar.App.GetEventsOfMonth:input_type -> calendar.GetEventsRequest
+	2,  // 17: calendar.App.AddEvent:output_type -> calendar.AddEventResponse
+	4,  // 18: calendar.App.UpdateEvent:output_type -> calendar.UpdateEventResponse
+	6,  // 19: calendar.App.DeleteEvent:output_type -> calendar.DeleteEventResponse
+	8,  // 20: calendar.App.GetEventsOfDay:output_type -> calendar.GetEventsResponse
+	8,  // 21: calendar.App.GetEventsOfWeek:output_type -> calendar.GetEventsResponse
+	8,  // 22: calendar.App.GetEventsOfMonth:output_type -> calendar.GetEventsResponse
 	17, // [17:23] is the sub-list for method output_type
 	11, // [11:17] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name

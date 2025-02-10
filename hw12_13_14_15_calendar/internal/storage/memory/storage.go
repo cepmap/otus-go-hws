@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/google/uuid"
@@ -20,8 +21,9 @@ type (
 	}
 )
 
-func (s *Storage) InitStorage() {
+func (s *Storage) InitStorage(_ *config.Storage) error {
 	s.events = make(Events)
+	return nil
 }
 
 func (s *Storage) Close() error {
@@ -125,7 +127,33 @@ func (s *Storage) DeleteEvent(_ context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (s *Storage) contains(id uuid.UUID) bool {
-	_, ok := s.events[id]
-	return ok
+func (s *Storage) DeleteEventsBefore(_ context.Context, before time.Time) (int64, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	deleted := int64(0)
+	for _, event := range s.events {
+		if event.DateEnd.Before(before) {
+			deleted++
+		}
+	}
+	return deleted, nil
+}
+
+func (s *Storage) GetEventsToNotify(_ context.Context, from, to time.Time) ([]models.Event, error) {
+	events := make([]models.Event, 0, len(s.events))
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for _, event := range s.events {
+		if event.IsToNotify(from, to) {
+			events = append(events, event)
+		}
+	}
+	sort.Slice(events, func(i, j int) bool {
+		return events[i].DateStart.Before(events[j].DateStart)
+	})
+
+	return events, nil
 }
