@@ -1,33 +1,20 @@
 package storage
 
 import (
-	"errors"
-	"fmt"
+	"context"
 	"time"
 
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/models"
 	"github.com/google/uuid"
 )
 
-type Event struct {
-	ID               uuid.UUID `db:"id"`
-	Title            string    `db:"title"`
-	DateStart        time.Time `db:"date_start"`
-	DateEnd          time.Time `db:"date_end"`
-	UserID           uuid.UUID `db:"user_id"`
-	Description      string    `db:"description"`
-	DateNotification time.Time `db:"date_notification"`
-}
-
-var (
-	ErrEventID            = errors.New("Event ID is not correct")
-	ErrEventNotFound      = errors.New("Event not found")
-	ErrEventAlreadyExists = errors.New("Event already exists")
-)
-
-func (e *Event) String() string {
-	return fmt.Sprintf("%v %v %v", e.ID, e.Title, e.DateStart)
-}
-
-func (e *Event) InPeriod(from time.Time, to time.Time) bool {
-	return e.DateStart.Before(to) && !e.DateEnd.Before(from)
+type Storage interface {
+	InitStorage()
+	AddEvent(ctx context.Context, event *models.Event) error
+	GetEvent(ctx context.Context, id uuid.UUID) (*models.Event, error)
+	GetEventsForPeriod(ctx context.Context, from, to time.Time) ([]models.Event, error)
+	ListEvents(ctx context.Context, limit, low uint64) ([]models.Event, error)
+	UpdateEvent(ctx context.Context, event *models.Event) error
+	DeleteEvent(ctx context.Context, id uuid.UUID) error
+	Close() error
 }

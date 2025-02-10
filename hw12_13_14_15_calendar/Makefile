@@ -39,4 +39,7 @@ migrate-up:
 migrate-down:
 	goose --dir=./migrations postgres "host=127.0.0.1 port=15432 user=postgres password=postgres dbname=postgres sslmode=disable" down
 
+generate:
+	go generate ./...
+
 .PHONY: build run build-img run-img version test lint
