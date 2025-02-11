@@ -1,20 +1,22 @@
-package grpc
+package internalgrpc
 
 import (
 	"fmt"
 	"net"
 
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
+	pb "github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/api"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/calendar"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/config"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/logger"
 	"google.golang.org/grpc"
 )
 
-func NewServer(app *app.App, addr string) *Server {
+func NewServer(app *calendar.App, srvCf *config.Server) *Server {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(serverUnaryInterceptor))
-	pbapp.RegisterAppServer(srv, api.NewAPI(app))
+	pb.RegisterAppServer(srv, api.NewAPI(app))
 
+	addr := net.JoinHostPort(srvCf.Host, srvCf.GRPCPort)
 	return &Server{
 		addr: addr,
 		srv:  srv,

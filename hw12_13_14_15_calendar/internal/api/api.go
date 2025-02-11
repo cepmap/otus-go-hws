@@ -5,16 +5,16 @@ import (
 	"fmt"
 
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/api/pbapp"
-	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/app"
+	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/calendar"
 	"github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/mapper"
 )
 
 type api struct {
 	pbapp.UnimplementedAppServer
-	app *app.App
+	app *calendar.App
 }
 
-func NewAPI(app *app.App) pbapp.AppServer {
+func NewAPI(app *calendar.App) pbapp.AppServer {
 	return &api{app: app}
 }
 
