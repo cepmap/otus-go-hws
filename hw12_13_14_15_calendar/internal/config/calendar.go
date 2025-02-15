@@ -29,7 +29,7 @@ func InitCalendarSettings() {
 
 	versionFlag := pflag.Bool("version", false, "version app")
 	pflag.String("loglevel", "INFO", "log level app")
-	pflag.String("config", "./configs/calendar.yaml", "Path to configuration file")
+	pflag.String("config", "./configs/calendar-compose.yaml", "Path to configuration file")
 	pflag.String("server_host", "0.0.0.0", "server hostname")
 	pflag.String("server_httpport", "8080", "server http port")
 

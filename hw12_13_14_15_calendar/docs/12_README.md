@@ -31,7 +31,7 @@
 
 Соответственно сервис будет запускаться командой вида
 ```bash
-./calendar --config=/path/to/calendar.yaml
+./calendar --config=/path/to/calendar-compose.yaml
 ```
 где `--config`  - путь к файлу конфигурации.
 

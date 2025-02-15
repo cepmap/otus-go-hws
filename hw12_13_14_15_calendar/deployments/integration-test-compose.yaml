@@ -1,0 +1,79 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: calendar
+    healthcheck:
+      test: pg_isready
+      interval: 5s
+      timeout: 60s
+      retries: 10
+
+  rabbit:
+    image: rabbitmq:3-management
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms
+      interval: 10s
+      timeout: 120s
+      retries: 10
+
+  migrations:
+    image: gomicro/goose
+    restart: "on-failure"
+    environment:
+      DBUSER: postgres
+      DBPASS: postgres
+    command: sh -c "goose postgres \"host=postgres user=$$DBUSER password=$$DBPASS dbname=calendar sslmode=disable\" up"
+    volumes:
+      - ../migrations:/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  calendar:
+    build:
+      context: ..
+      dockerfile: build/common.Dockerfile
+    restart: on-failure
+    command: sh -c "$${BIN_FILE_CALENDAR} --config $${CONFIG_FILE_CALENDAR}"
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  scheduler:
+    build:
+      context: ..
+      dockerfile: build/common.Dockerfile
+    restart: on-failure
+    command: sh -c "$${BIN_FILE_SCHEDULER} --config $${CONFIG_FILE_SCHEDULER}"
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      rabbit:
+        condition: service_healthy
+
+  sender:
+    build:
+      context: ..
+      dockerfile: build/common.Dockerfile
+    restart: on-failure
+    command: sh -c "$${BIN_FILE_SENDER} --config $${CONFIG_FILE_SENDER}"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+
+  tester:
+    build:
+      context: ..
+      dockerfile: build/integration.Dockerfile
+    depends_on:
+      sender:
+        condition: service_started
