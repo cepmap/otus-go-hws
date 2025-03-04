@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sender
+spec:
+  replicas: 1  # Number of Pod replicas to run
+  selector:
+    matchLabels:
+      app: sender
+  template:
+    metadata:
+      labels:
+        app: sender
+    spec:
+      containers:
+        - image: sender:develop
+          name: sender
+          volumeMounts:
+            - name: sender-config
+              mountPath: /etc/calendar/sender.yaml  # Mount the file directly
+              subPath: config.yaml
+      volumes:
+        - name: sender-config
+          configMap:
+            name: sender-config   # Name of the ConfigMap
+            items:
+              - key: config.yaml     # Key in the ConfigMap
+                path: config.yaml    # File name to create in the mountPath
+      restartPolicy: Always  # Deployments require "Always" as the restart policy

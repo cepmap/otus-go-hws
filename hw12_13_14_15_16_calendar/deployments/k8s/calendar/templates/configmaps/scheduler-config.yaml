@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scheduler-config
+data:
+  config.yaml: |
+    log:
+      level: "{{ .Values.scheduler.logLevel }}"
+    storage:
+      type: "{{ .Values.storage.type }}"
+      db:
+        name: "{{.Values.db.name}}"
+        host: "{{.Values.db.host}}"
+        user: "{{.Values.db.user}}"
+        password: "{{.Values.db.password}}"
+    rmq:
+      host: "{{.Values.rmq.host}}"
+      port: "{{.Values.rmq.port}}"
+      user: "{{.Values.rmq.user}}"
+      password: "{{.Values.rmq.password}}"
+      queue: "{{.Values.rmq.queue}}"
+    schedule: "{{.Values.scheduler.schedule}}"

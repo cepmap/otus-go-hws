@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calendar-config
+data:
+  config.yaml: |
+    log:
+      level: "{{ .Values.calendar.logLevel }}"
+    storage:
+      type: "{{ .Values.storage.type }}"
+      db:
+        name: "{{.Values.db.name}}"
+        host: "{{.Values.db.host}}"
+        user: "{{.Values.db.user}}"
+        password: "{{.Values.db.password}}"
+    server:
+      host: "{{.Values.calendar.server.host}}"
+      httpPort: "{{.Values.calendar.server.httpPort}}"
+      grpcPort: "{{.Values.calendar.server.grpcPort}}"
