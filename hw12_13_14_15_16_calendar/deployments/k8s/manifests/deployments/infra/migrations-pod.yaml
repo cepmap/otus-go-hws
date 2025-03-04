@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: migrations
+spec:
+  containers:
+    - args:
+        - sh
+        - -c
+        - goose postgres "host=postgres user=$(DBUSER) password=$(DBPASS) dbname=calendar sslmode=disable" up
+      env:
+        - name: DBPASS
+          value: postgres
+        - name: DBUSER
+          value: postgres
+      image: gomicro/goose
+      name: migrations
+      volumeMounts:
+        - mountPath: /migrations
+          name: migrations-cm0
+  restartPolicy: OnFailure
+  volumes:
+    - configMap:
+        name: migrations-cm0
+      name: migrations-cm0

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler
+spec:
+  replicas: 1  # Number of Pod replicas to run
+  selector:
+    matchLabels:
+      app: scheduler
+  template:
+    metadata:
+      labels:
+        app: scheduler
+    spec:
+      containers:
+        - image: scheduler:develop
+          name: scheduler
+          volumeMounts:
+            - name: scheduler-config
+              mountPath: /etc/calendar/scheduler.yaml  # Mount the file directly
+              subPath: config.yaml
+      volumes:
+        - name: scheduler-config
+          configMap:
+            name: scheduler-config   # Name of the ConfigMap
+            items:
+              - key: config.yaml     # Key in the ConfigMap
+                path: config.yaml    # File name to create in the mountPath
+      restartPolicy: Always  # Deployments require "Always" as the restart policy

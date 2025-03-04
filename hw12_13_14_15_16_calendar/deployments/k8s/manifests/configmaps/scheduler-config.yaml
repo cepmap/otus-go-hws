@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scheduler-config
+data:
+  config.yaml: |
+    log:
+      level: "DEBUG"
+    storage:
+      type: "sql"
+      db:
+        name: "calendar"
+        host: "postgres"
+        user: "postgres"
+        password: "postgres"
+    rmq:
+      host: "rabbit"
+      port: "5672"
+      user: "guest"
+      password: "guest"
+      queue: "e_notifications"
+    schedule: "5s"
