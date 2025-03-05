@@ -1,0 +1,32 @@
+ingress:
+  host: calendar-helm.example
+
+calendar:
+  logLevel: INFO
+  server:
+    host: "0.0.0.0"
+    httpPort: "8081"
+    grpcPort: "8082"
+
+scheduler:
+  logLevel: INFO
+  schedule: "5s"
+
+sender:
+  logLevel: INFO
+
+storage:
+  type: sql
+
+rmq:
+  host: "rabbit"
+  port: "5672"
+  user: "guest"
+  password: "guest"
+  queue: "e_notifications"
+  sendTo: "notifications_out"
+db:
+  name: "calendar"
+  host: "postgres"
+  user: "postgres"
+  password: "postgres"

@@ -12,7 +12,7 @@ import (
 
 /* other way - mockgen
 go:generate mockgen -destination=mocks/Application.go
--package=mocks github.com/cepmap/otus-go-hws/hw12_13_14_15_calendar/internal/server Application
+-package=mocks github.com/cepmap/otus-go-hws/hw12_13_14_15_16_calendar/internal/server Application
 */
 
 type Application interface {

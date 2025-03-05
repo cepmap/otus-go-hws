@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calendar
+spec:
+  replicas: 1  # Number of Pod replicas to run
+  selector:
+    matchLabels:
+      app: calendar
+  template:
+    metadata:
+      labels:
+        app: calendar
+    spec:
+      containers:
+        - image: calendar:develop
+          name: calendar
+          ports:
+            - containerPort: {{ .Values.calendar.server.httpPort }}
+              protocol: TCP
+            - containerPort: {{ .Values.calendar.server.grpcPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: calendar-config
+              mountPath: /etc/calendar/calendar.yaml  # Mount the file directly
+              subPath: config.yaml
+      volumes:
+        - name: calendar-config
+          configMap:
+            name: calendar-config   # Name of the ConfigMap
+            items:
+              - key: config.yaml     # Key in the ConfigMap
+                path: config.yaml    # File name to create in the mountPath
+      restartPolicy: Always  # Deployments require "Always" as the restart policy

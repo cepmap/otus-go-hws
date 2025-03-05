@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calendar-config
+data:
+  config.yaml: |
+    log:
+      level: "INFO"
+    storage:
+      type: "sql"
+      db:
+        name: "calendar"
+        host: "postgres"
+        user: "postgres"
+        password: "postgres"
+    server:
+      host: "0.0.0.0"
+      httpPort: "8081"
+      grpcPort: "8082"

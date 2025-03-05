@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sender-config
+data:
+  config.yaml: |
+    log:
+      level: "{{ .Values.sender.logLevel }}"
+    rmq:
+      host: "{{.Values.rmq.host}}"
+      port: "{{.Values.rmq.port}}"
+      user: "{{.Values.rmq.user}}"
+      password: "{{.Values.rmq.password}}"
+      queue: "{{.Values.rmq.queue}}"
+      sendTo: "{{.Values.rmq.sendTo}}"

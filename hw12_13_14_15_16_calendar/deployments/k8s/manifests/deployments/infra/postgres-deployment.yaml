@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data
+            - name: POSTGRES_DB
+              value: calendar
+            - name: POSTGRES_PASSWORD
+              value: postgres
+          image: postgres
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+            failureThreshold: 10
+            periodSeconds: 5
+            timeoutSeconds: 60
+          name: postgres
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+      restartPolicy: Always
